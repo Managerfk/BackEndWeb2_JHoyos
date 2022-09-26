@@ -1,29 +1,25 @@
-const TipoEquipo = require('../models/tipoEquipos')
+const EstadoEquipo = require('../models/EstadoEquipo')
 const { request, response } = require('express')
 
 /**
- * crear un tipo de equipo(create)
+ * crear un Estado de equipo(create)
  */
 
-const createTipoEquipo = async(req = request, res = response) =>{
-    const nombre = (req.body.Nombre)? req.body.Nombre.toUpperCase(): ''
-    const fechaActualizacion = (req.body.FechaActualizacion)? req.body.FechaActualizacion: new Date()
+const createEstadoEquipo = async(req = request, res = response) =>{
 
-    const tipoEquipoDB = await TipoEquipo.findOne({nombre})
-    if(tipoEquipoDB){
-        return res.status(400).json({msg: 'Ya existe nombre'})
-    }
+    const nombre = (req.body.Nombre)? req.body.Nombre.toUpperCase(): ''
+    const ubi = (req.body.Ubicacion)? req.body.Ubicacion.toUpperCase(): req.body.Ubicacion
     
     const datos = {
         Nombre: nombre,
-        FechaActualizacion: fechaActualizacion
+        Ubicacion: ubi
     }
 
-    const tipoEquipo = new TipoEquipo(datos)
-    console.log(tipoEquipo)
-    await tipoEquipo.save()
+    const estadoEquipo = new EstadoEquipo(datos)
+    console.log(estadoEquipo)
+    await estadoEquipo.save()
 
-    res.status(201).json(tipoEquipo)
+    res.status(201).json(estadoEquipo)
 }
 
 /**
@@ -33,15 +29,19 @@ const createTipoEquipo = async(req = request, res = response) =>{
 const getTipoById = async(req = request, res = response) => {
     try{
         const id = req.params.id
-        const estado = req.query.Estado
 
-        const filter = {Estado: estado, _id: id}
-        const tipoEquipoDB = await TipoEquipo.findOne(filter)
-        return res.json(tipoEquipoDB)
+        const filter = {_id: id}
+        const Equipo = await EstadoEquipo.findOne(filter)
+        return res.json(Equipo)
     }catch(e)
     {
         return res.status(500).json({msj:e})
     }
+
+
+
+    
+
 }
 
 /**
@@ -56,33 +56,34 @@ const uptdateById = async(req = request, res = response) => {
         console.log(id)
         data.FechaActualizacion = new Date()
         console.log(data)
-        const tipoEquipo = await TipoEquipo.findByIdAndUpdate(id, data, {new: true})
-        return res.json(tipoEquipo) 
+        const Equipo = await EstadoEquipo.findByIdAndUpdate(id, data, {new: true})
+        return res.json(Equipo)
     }catch(e){
         return res.status(500).json({msj:e})
     }
 }
 
 /**
- * Borrar tipo de equipo por id(delete)
+ * Borrar Estado de equipo por id(delete)
  */
 
 const deleteById = async(req = request, res = response) =>{
     try{
         const id= req.params.id
-        const tipoEquipoDB = await TipoEquipo.findById(id)
-        if(!tipoEquipoDB){
+        const Equipo = await EstadoEquipo.findById(id)
+        if(!Equipo){
             return res.status(400).json({msg: 'No existe el registro'})
         }
-        await TipoEquipo.findByIdAndDelete(id)
+        await EstadoEquipo.findByIdAndDelete(id)
         return res.status(204).json({msg: 'borrado '})
     }catch(e){
         return res.status(500).json({msj:e})
     }
+
 }
 
 module.exports = {
-    createTipoEquipo,
+    createEstadoEquipo,
     uptdateById,
     getTipoById,
     deleteById

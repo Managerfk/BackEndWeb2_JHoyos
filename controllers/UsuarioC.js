@@ -1,29 +1,29 @@
-const TipoEquipo = require('../models/tipoEquipos')
+const Usuario = require('../models/Usuario')
 const { request, response } = require('express')
 
 /**
- * crear un tipo de equipo(create)
+ * crear un usuario(create)
  */
 
-const createTipoEquipo = async(req = request, res = response) =>{
+const createUsuario = async(req = request, res = response) =>{
+
     const nombre = (req.body.Nombre)? req.body.Nombre.toUpperCase(): ''
+    const email = (req.body.Email)? req.body.Email: '@'
     const fechaActualizacion = (req.body.FechaActualizacion)? req.body.FechaActualizacion: new Date()
 
-    const tipoEquipoDB = await TipoEquipo.findOne({nombre})
-    if(tipoEquipoDB){
-        return res.status(400).json({msg: 'Ya existe nombre'})
-    }
-    
     const datos = {
         Nombre: nombre,
+        Email: email,
         FechaActualizacion: fechaActualizacion
     }
 
-    const tipoEquipo = new TipoEquipo(datos)
-    console.log(tipoEquipo)
-    await tipoEquipo.save()
+    const usuario = new Usuario(datos)
+    console.log(usuario)
+    await usuario.save()
 
-    res.status(201).json(tipoEquipo)
+    res.status(201).json(usuario)
+
+
 }
 
 /**
@@ -33,15 +33,15 @@ const createTipoEquipo = async(req = request, res = response) =>{
 const getTipoById = async(req = request, res = response) => {
     try{
         const id = req.params.id
-        const estado = req.query.Estado
 
-        const filter = {Estado: estado, _id: id}
-        const tipoEquipoDB = await TipoEquipo.findOne(filter)
-        return res.json(tipoEquipoDB)
+        const filter = {_id: id}
+        const usuario = await Usuario.findOne(filter)
+        return res.json(usuario)
     }catch(e)
     {
         return res.status(500).json({msj:e})
     }
+
 }
 
 /**
@@ -56,11 +56,12 @@ const uptdateById = async(req = request, res = response) => {
         console.log(id)
         data.FechaActualizacion = new Date()
         console.log(data)
-        const tipoEquipo = await TipoEquipo.findByIdAndUpdate(id, data, {new: true})
-        return res.json(tipoEquipo) 
+        const usuario = await Usuario.findByIdAndUpdate(id, data, {new: true})
+        return res.json(usuario)
     }catch(e){
         return res.status(500).json({msj:e})
     }
+
 }
 
 /**
@@ -70,19 +71,20 @@ const uptdateById = async(req = request, res = response) => {
 const deleteById = async(req = request, res = response) =>{
     try{
         const id= req.params.id
-        const tipoEquipoDB = await TipoEquipo.findById(id)
-        if(!tipoEquipoDB){
+        const usuario = await Usuario.findById(id)
+        if(!usuario){
             return res.status(400).json({msg: 'No existe el registro'})
         }
-        await TipoEquipo.findByIdAndDelete(id)
+        await Usuario.findByIdAndDelete(id)
         return res.status(204).json({msg: 'borrado '})
     }catch(e){
         return res.status(500).json({msj:e})
     }
+
 }
 
 module.exports = {
-    createTipoEquipo,
+    createUsuario,
     uptdateById,
     getTipoById,
     deleteById
