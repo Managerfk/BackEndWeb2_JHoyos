@@ -9,10 +9,11 @@ const createTipoEquipo = async(req = request, res = response) =>{
     const nombre = (req.body.Nombre)? req.body.Nombre.toUpperCase(): ''
     const fechaActualizacion = (req.body.FechaActualizacion)? req.body.FechaActualizacion: new Date()
 
+    /** 
     const tipoEquipoDB = await TipoEquipo.findOne({nombre})
     if(tipoEquipoDB){
         return res.status(400).json({msg: 'Ya existe nombre'})
-    }
+    }*/
     
     const datos = {
         Nombre: nombre,

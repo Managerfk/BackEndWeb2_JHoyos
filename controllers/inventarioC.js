@@ -110,17 +110,15 @@ const createInventario = async(req= request,res=response) => {
  */
  const deleteInventario = async(req= request,res=response) => {
     try{
-        const id= req.params
-        const filter = {_id:id}
+        const id= req.params.id
         const data = req.body
 
-        const inventario = await Inventario.findByIdAndDelete(filter)
+        await Inventario.findByIdAndDelete(id)
         return res.status(204).json({})
     }catch(e){
         console.log(e)
         return res.status(500).json({msj: 'Error'})
-
-        }
+    }
     }
 
 
